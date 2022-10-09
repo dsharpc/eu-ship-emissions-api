@@ -19,7 +19,7 @@ class Ship(Base):
     doc_issue_date = Column(Date)
     doc_expiry_date = Column(Date)
 
-    monitoring_results = relationship("MonitoringResult", back_populates="ship")
+    monitoring_result = relationship("MonitoringResult", back_populates="ship", uselist=False)
 
 class MonitoringResult(Base):
     __tablename__ = "monitoring_results"
@@ -41,5 +41,5 @@ class MonitoringResult(Base):
     ship = relationship(
         "Ship",
         foreign_keys="[MonitoringResult.ship_imo_number, MonitoringResult.ship_reporting_period]",
-        back_populates="monitoring_results",
+        back_populates="monitoring_result",
     )

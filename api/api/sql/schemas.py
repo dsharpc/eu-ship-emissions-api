@@ -46,7 +46,7 @@ class ThetisMRVView(BaseModel):
     ship_type: str
     technical_efficiency: Optional[str]
     reporting_period: int
-    monitoring_results: list[ThetisMRVMonitoringResult]
+    monitoring_result: ThetisMRVMonitoringResult
 
     class Config:
         orm_mode = True

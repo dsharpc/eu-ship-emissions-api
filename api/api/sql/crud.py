@@ -116,7 +116,7 @@ def thetis_mrv_view(db: Session, imo_number: int = None, ship_name: str = None, 
     models.Ship
         Matching record or None if it doesn't exist
     """
-    ships = db.query(models.Ship).options(joinedload(models.Ship.monitoring_results))
+    ships = db.query(models.Ship).join(models.MonitoringResult)
     if imo_number:
         ships = ships.filter(models.Ship.imo_number == imo_number)
     if ship_name:
@@ -126,4 +126,36 @@ def thetis_mrv_view(db: Session, imo_number: int = None, ship_name: str = None, 
     ships = ships.order_by(models.Ship.imo_number, models.Ship.reporting_period)
     return ships
     
+
+def ships_with_top_total_emissions(db: Session) -> list[models.Ship]:
+    """Returns a list of the Ships with the highest emissions volume
+
+    Parameters
+    ----------
+    db : Session
+
+    Returns
+    -------
+    list[models.Ship]
+        List of ships with highest emissions value
+    """
+    ships = db.query(models.Ship).join(models.MonitoringResult)
+    ships = ships.order_by(models.MonitoringResult.total_co2_emissions.desc())
+    return ships
+
+def ships_with_worst_emission_per_distance(db: Session) -> list[models.Ship]:
+    """Returns a list of the Ships with the highest emissions volume per distance
+
+    Parameters
+    ----------
+    db : Session
+
+    Returns
+    -------
+    list[models.Ship]
+        List of ships with highest emissions value per distance
+    """
+    ships = db.query(models.Ship).join(models.MonitoringResult)
+    ships = ships.order_by(models.MonitoringResult.average_co2_emissions_per_distance.desc())
+    return ships
 
