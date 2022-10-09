@@ -32,7 +32,6 @@ services:
       - 5432:5432
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./sql:/docker-entrypoint-initdb.d/
     environment:
       - POSTGRES_PASSWORD=postgres_pass
       - POSTGRES_DB=eu_ship_emissions

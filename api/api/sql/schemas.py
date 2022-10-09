@@ -5,8 +5,8 @@ from pydantic import BaseModel
 from datetime import date
 
 class MonitoringResult(BaseModel):
-    ship_imo_number: int
-    ship_reporting_period: int
+    imo_number: int
+    reporting_period: int
     total_fuel_consumption: Optional[float]
     total_co2_emissions: Optional[float]
     annual_time_spent_at_sea: Optional[float]

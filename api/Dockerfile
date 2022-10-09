@@ -22,6 +22,6 @@ ENV STAGE=PROD
 
 COPY ./api /api
 
-CMD "uvicorn main:app --reload --host 0.0.0.0"
+CMD uvicorn main:app --reload --host 0.0.0.0
 
 
