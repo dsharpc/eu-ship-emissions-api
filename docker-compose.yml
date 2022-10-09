@@ -14,6 +14,13 @@ services:
       - 8000:8000
     volumes:
       - ./api/api:/api
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres_pass
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=eu_ship_emissions
+      - GCP_BUCKET_NAME=eu-ship-emissions-data
     tty: true
     depends_on:
       - db
