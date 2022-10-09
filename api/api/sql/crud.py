@@ -1,6 +1,6 @@
 """CRUD operatinos executed via the SQLAlchemy ORM"""
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from . import models, schemas
 
 def get_ship(db: Session, imo_number: int, reporting_period: int) -> models.Ship:
@@ -22,8 +22,7 @@ def get_ship(db: Session, imo_number: int, reporting_period: int) -> models.Ship
     return db.query(models.Ship)\
         .filter(models.Ship.imo_number == imo_number)\
             .filter(models.Ship.reporting_period == reporting_period).first()
-
-
+    
 def create_ship(db: Session, ship: schemas.Ship) -> models.Ship:
     """Create Ship record in database using SQLAlchemy's ORM
 
@@ -54,7 +53,7 @@ def create_ship(db: Session, ship: schemas.Ship) -> models.Ship:
     return db_ship
 
 def get_monitoring_result(db: Session, imo_number: int, reporting_period: int) -> models.MonitoringResult:
-    """Query database and return Ship object with given imo_number and reporting_period
+    """Query database and return MonitoringResult object with given imo_number and reporting_period
 
     Parameters
     ----------
@@ -98,3 +97,33 @@ def create_monitoring_result(db: Session, monitoring_result: schemas.MonitoringR
     db.commit()
     db.refresh(db_monitoring_result)
     return db_monitoring_result
+
+def thetis_mrv_view(db: Session, imo_number: int = None, ship_name: str = None, reporting_period: int = None) -> models.Ship:
+    """Query database and return all the Ship objects that match at least one of the conditions. This matches the view on the THETIS-MRV website.
+    
+    Parameters
+    ----------
+    db : Session
+    imo_number : int
+        IMO to filter by
+    ship_name : str
+        Ships name (or substring of name) to match on
+    reporting_period : int
+        Reporting period to filter by
+
+    Returns
+    -------
+    models.Ship
+        Matching record or None if it doesn't exist
+    """
+    ships = db.query(models.Ship).options(joinedload(models.Ship.monitoring_results))
+    if imo_number:
+        ships = ships.filter(models.Ship.imo_number == imo_number)
+    if ship_name:
+        ships = ships.filter(models.Ship.name.contains(ship_name.upper()))
+    if reporting_period:
+        ships = ships.filter(models.Ship.reporting_period == reporting_period)
+    ships = ships.order_by(models.Ship.imo_number, models.Ship.reporting_period)
+    return ships
+    
+
