@@ -1,0 +1,31 @@
+version: '3'
+
+volumes:
+  db_data:
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: dev
+    container_name: eu_emissions_api
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api/api:/api
+    tty: true
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:14
+    container_name: eu_emissions_db
+    ports:
+      - 5432:5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d/
+    environment:
+      - POSTGRES_PASSWORD=postgres_pass
+      - POSTGRES_DB=eu_ship_emissions
