@@ -1,6 +1,6 @@
-"""CRUD operatinos executed via the SQLAlchemy ORM"""
+"""CRUD operations executed via the SQLAlchemy ORM"""
 
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from . import models, schemas
 
 def get_ship(db: Session, imo_number: int, reporting_period: int) -> models.Ship:
